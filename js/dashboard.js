@@ -70,8 +70,9 @@ function loadEnvironmentalImpact() {
         }
     });
 
-    // Oxygen calculation: roughly 2.9x the CO2 absorption
-    const oxygen = Math.round(totalCO2 * 2.92);
+    // Oxygen calculation: approximately 2.92x the CO2 absorption (based on photosynthesis ratio)
+    const OXYGEN_TO_CO2_RATIO = 2.92;
+    const oxygen = Math.round(totalCO2 * OXYGEN_TO_CO2_RATIO);
     
     // Water conservation: roughly 400 liters per tree per year
     const trees = user.trees || contributions.length;
@@ -106,16 +107,16 @@ function loadPlantBreakdown() {
         }
     });
 
-    // If no contributions, show default data
+    // If no contributions, show default data using actual plant data
     if (Object.keys(plantCounts).length === 0) {
-        const defaultPlants = [
-            { name: 'Neem Tree', count: 5, co2: 25 },
-            { name: 'Mango Tree', count: 3, co2: 30 },
-            { name: 'Banyan Tree', count: 2, co2: 45 },
-            { name: 'Bamboo', count: 2, co2: 35 }
-        ];
-        defaultPlants.forEach(p => {
-            plantCounts[p.name] = { count: p.count, co2: p.co2 };
+        const allPlants = DataStore.getPlants();
+        const defaultPlantIds = [1, 2, 3, 9]; // Neem, Mango, Banyan, Bamboo
+        const defaultCounts = [5, 3, 2, 2];
+        defaultPlantIds.forEach((id, index) => {
+            const plant = allPlants.find(p => p.id === id);
+            if (plant) {
+                plantCounts[plant.name] = { count: defaultCounts[index], co2: plant.co2PerYear };
+            }
         });
     }
 

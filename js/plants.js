@@ -12,6 +12,10 @@ function initializePlantsPage() {
     setupImagePreview();
 }
 
+function getPlaceholderImage(plantName, width = 300, height = 180) {
+    return `https://via.placeholder.com/${width}x${height}/228B22/ffffff?text=${encodeURIComponent(plantName)}`;
+}
+
 function loadPlants() {
     const container = document.getElementById('plants-container');
     if (!container) return;
@@ -20,7 +24,7 @@ function loadPlants() {
     
     container.innerHTML = plants.map(plant => `
         <div class="plant-select-card" data-plant-id="${plant.id}" onclick="selectPlant(${plant.id})">
-            <img src="${plant.image}" alt="${plant.name}" onerror="this.src='https://via.placeholder.com/300x180/228B22/ffffff?text=${encodeURIComponent(plant.name)}'">
+            <img src="${plant.image}" alt="${plant.name}" onerror="this.src='${getPlaceholderImage(plant.name)}'">
             <div class="plant-details">
                 <h3>${plant.name}</h3>
                 <p>${plant.description}</p>

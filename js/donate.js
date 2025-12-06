@@ -138,7 +138,7 @@ function setupDonateForm() {
             return;
         }
 
-        // Validate card number (basic check - 16 digits)
+        // Validate card number (basic check - 15+ digits for Amex, 16 for others)
         if (cardNumber.replace(/\s/g, '').length < 15) {
             alert('Please enter a valid card number.');
             return;
