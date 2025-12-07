@@ -483,24 +483,27 @@
     <script src="js/auth.js"></script>
     <script>
         function switchTab(tab) {
-            // Update tab buttons
+            // Update tab buttons using a mapping approach for robustness
             const tabs = document.querySelectorAll('.auth-tab');
             tabs.forEach(t => t.classList.remove('active'));
             
             // Hide all forms
-            document.getElementById('login-form').classList.remove('active');
-            document.getElementById('signup-form').classList.remove('active');
-            document.getElementById('reset-form').classList.remove('active');
+            document.getElementById('login-form')?.classList.remove('active');
+            document.getElementById('signup-form')?.classList.remove('active');
+            document.getElementById('reset-form')?.classList.remove('active');
             
-            if (tab === 'login') {
-                tabs[0].classList.add('active');
-                document.getElementById('login-form').classList.add('active');
-            } else if (tab === 'signup') {
-                tabs[1].classList.add('active');
-                document.getElementById('signup-form').classList.add('active');
-            } else if (tab === 'reset') {
-                tabs[2].classList.add('active');
-                document.getElementById('reset-form').classList.add('active');
+            // Mapping tab names to tab positions and form IDs for maintainability
+            const formMap = {
+                'login': { index: 0, formId: 'login-form' },
+                'signup': { index: 1, formId: 'signup-form' },
+                'reset': { index: 2, formId: 'reset-form' }
+            };
+            
+            const selectedTab = formMap[tab];
+            if (selectedTab && tabs[selectedTab.index]) {
+                tabs[selectedTab.index].classList.add('active');
+                const form = document.getElementById(selectedTab.formId);
+                if (form) form.classList.add('active');
             }
 
             // Clear messages
@@ -622,8 +625,22 @@
             event.preventDefault();
             hideMessages();
 
-            const email = document.getElementById('reset-email').value;
+            const emailInput = document.getElementById('reset-email');
+            const email = emailInput?.value?.trim() || '';
             const btn = document.getElementById('reset-btn');
+
+            // Validate email before sending
+            if (!email) {
+                showError('Please enter your email address.');
+                return;
+            }
+
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
@@ -704,6 +721,8 @@
         // Password strength indicator
         function checkPasswordStrength(password) {
             const strengthEl = document.getElementById('password-strength');
+            if (!strengthEl) return; // Safety check
+            
             if (!password) {
                 strengthEl.textContent = '';
                 return;
@@ -739,13 +758,18 @@
             const urlParams = new URLSearchParams(window.location.search);
             const isReset = urlParams.get('reset');
             
-            if (isReset === 'true') {
+            // Check for reset parameter (handles 'true', '1', or any truthy value)
+            if (isReset && (isReset === 'true' || isReset === '1')) {
                 // Show new password form
-                document.getElementById('new-password-form').style.display = 'block';
-                document.querySelector('.auth-tabs').style.display = 'none';
-                document.getElementById('login-form').classList.remove('active');
-                document.getElementById('signup-form').classList.remove('active');
-                document.getElementById('reset-form').classList.remove('active');
+                const newPasswordForm = document.getElementById('new-password-form');
+                const authTabs = document.querySelector('.auth-tabs');
+                
+                if (newPasswordForm) newPasswordForm.style.display = 'block';
+                if (authTabs) authTabs.style.display = 'none';
+                
+                document.getElementById('login-form')?.classList.remove('active');
+                document.getElementById('signup-form')?.classList.remove('active');
+                document.getElementById('reset-form')?.classList.remove('active');
                 
                 showSuccess('Please enter your new password below.');
             }

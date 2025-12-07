@@ -128,7 +128,12 @@ const AuthManager = {
         const supabase = window.getSupabaseClient();
         if (!supabase) return { error: { message: 'Supabase not initialized' } };
         
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        // Validate email parameter
+        if (!email || typeof email !== 'string' || email.trim() === '') {
+            return { error: { message: 'Valid email address is required' } };
+        }
+        
+        const { data, error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
             redirectTo: window.location.origin + '/login.html?reset=true'
         });
         
@@ -139,6 +144,15 @@ const AuthManager = {
     updatePassword: async function(newPassword) {
         const supabase = window.getSupabaseClient();
         if (!supabase) return { error: { message: 'Supabase not initialized' } };
+        
+        // Validate password parameter
+        if (!newPassword || typeof newPassword !== 'string' || newPassword.trim() === '') {
+            return { error: { message: 'Password is required' } };
+        }
+        
+        if (newPassword.length < 6) {
+            return { error: { message: 'Password must be at least 6 characters long' } };
+        }
         
         const { data, error } = await supabase.auth.updateUser({
             password: newPassword
