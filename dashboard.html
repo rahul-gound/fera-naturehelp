@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - NatureHelp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> NatureHelp
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="plants.html" class="nav-link">Choose Plant</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+                <a href="dashboard.html" class="nav-link active">My Dashboard</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>My Dashboard</h1>
+        <p>Track your environmental impact and contributions</p>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=228B22&color=fff&size=120" alt="Profile" class="avatar" id="user-avatar">
+                    <h2 id="user-name">John Doe</h2>
+                    <p class="rank" id="user-rank"><i class="fas fa-trophy"></i> Rank #5</p>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <h4 id="user-trees">12</h4>
+                            <p>Trees Planted</p>
+                        </div>
+                        <div class="profile-stat">
+                            <h4 id="user-co2">300 kg</h4>
+                            <p>CO2 Absorbed</p>
+                        </div>
+                        <div class="profile-stat">
+                            <h4 id="user-donations">$150</h4>
+                            <p>Donated</p>
+                        </div>
+                        <div class="profile-stat">
+                            <h4 id="user-months">3</h4>
+                            <p>Months Active</p>
+                        </div>
+                    </div>
+                    <a href="plants.html" class="btn btn-primary" style="margin-top: 20px; width: 100%;">
+                        <i class="fas fa-plus"></i> Add New Plant
+                    </a>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div class="dashboard-content">
+                    <!-- Environmental Impact -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-globe-americas"></i> Your Environmental Impact</h3>
+                        <div class="impact-stats">
+                            <div class="impact-stat">
+                                <i class="fas fa-cloud"></i>
+                                <h4 id="impact-co2">300 kg</h4>
+                                <p>CO2 Absorbed Yearly</p>
+                            </div>
+                            <div class="impact-stat">
+                                <i class="fas fa-lungs"></i>
+                                <h4 id="impact-oxygen">876 kg</h4>
+                                <p>Oxygen Produced Yearly</p>
+                            </div>
+                            <div class="impact-stat">
+                                <i class="fas fa-water"></i>
+                                <h4 id="impact-water">4,800 L</h4>
+                                <p>Water Conserved Yearly</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plant Breakdown -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-chart-pie"></i> Plant Breakdown</h3>
+                        <div class="plant-breakdown" id="plant-breakdown">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <!-- My Plants -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-seedling"></i> My Planted Trees</h3>
+                        <div class="my-plants-grid" id="my-plants-grid">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        <div class="activity-list" id="activity-list">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Modal -->
+    <div class="modal-overlay" id="certificate-modal">
+        <div class="certificate-modal">
+            <button class="close-btn" onclick="closeCertificateModal()">&times;</button>
+            <div class="certificate-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <h2>Certificate of Appreciation</h2>
+            <p class="recipient" id="cert-recipient">John Doe</p>
+            <p class="achievement">For outstanding contribution to environmental conservation</p>
+            <div class="stats-row">
+                <div class="cert-stat">
+                    <h4 id="cert-trees">12</h4>
+                    <p>Trees Planted</p>
+                </div>
+                <div class="cert-stat">
+                    <h4 id="cert-co2">300 kg</h4>
+                    <p>CO2 Absorbed</p>
+                </div>
+            </div>
+            <p class="date" id="cert-date">Issued on December 6, 2024</p>
+            <button class="btn btn-primary download-cert-btn" onclick="downloadCertificate()">
+                <i class="fas fa-download"></i> Download Certificate
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3><i class="fas fa-leaf"></i> NatureHelp</h3>
+                    <p>Helping people contribute to nature, one plant at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="plants.html">Choose Plant</a>
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="donate.html">Donate</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@naturehelp.org</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NatureHelp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

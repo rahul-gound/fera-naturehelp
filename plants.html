@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose a Plant - NatureHelp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> NatureHelp
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="plants.html" class="nav-link active">Choose Plant</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+                <a href="dashboard.html" class="nav-link">My Dashboard</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Choose Your Plant</h1>
+        <p>Select a plant to contribute to nature and help fight climate change</p>
+    </section>
+
+    <!-- Plants Section -->
+    <section class="plants-section">
+        <div class="container">
+            <h2 class="section-title">Available Plants</h2>
+            <div class="plants-container" id="plants-container">
+                <!-- Plants will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="upload-section" id="upload-section">
+        <div class="container">
+            <div class="upload-container">
+                <h2>Upload Your Contribution</h2>
+                <form id="upload-form">
+                    <div class="form-group">
+                        <label for="user-name">Your Name</label>
+                        <input type="text" id="user-name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Email Address</label>
+                        <input type="email" id="user-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Selected Plant</label>
+                        <input type="text" id="selected-plant-name" readonly placeholder="Please select a plant above">
+                        <input type="hidden" id="selected-plant-id" name="plantId">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Planting Location</label>
+                        <input type="text" id="location" name="location" placeholder="Where did you plant this?">
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Photo of Your Plant</label>
+                        <div class="upload-area" id="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop your photo here or click to browse</p>
+                            <input type="file" id="plant-photo" name="photo" accept="image/*" required>
+                        </div>
+                        <img id="preview-image" class="preview-image" alt="Preview">
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (Optional)</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Share your experience..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary submit-btn">
+                        <i class="fas fa-upload"></i> Submit Contribution
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <strong>Success!</strong>
+            <p>Your contribution has been recorded.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3><i class="fas fa-leaf"></i> NatureHelp</h3>
+                    <p>Helping people contribute to nature, one plant at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="plants.html">Choose Plant</a>
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="donate.html">Donate</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@naturehelp.org</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NatureHelp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/plants.js"></script>
+</body>
+</html>

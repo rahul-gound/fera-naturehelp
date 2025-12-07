@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NatureHelp - Plant Trees, Save Earth</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> NatureHelp
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="plants.html" class="nav-link">Choose Plant</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+                <a href="dashboard.html" class="nav-link">My Dashboard</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Plant Trees, <span class="highlight">Save Earth</span></h1>
+            <p>Join our community of nature lovers. Plant trees, track your contribution, and see how much CO2 you've helped remove from the environment.</p>
+            <div class="hero-buttons">
+                <a href="plants.html" class="btn btn-primary">Start Planting</a>
+                <a href="leaderboard.html" class="btn btn-secondary">View Leaderboard</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600" alt="Nature" onerror="this.src='https://via.placeholder.com/600x400/228B22/ffffff?text=Plant+Trees'">
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-tree"></i>
+                    <h3 id="total-trees">1,247</h3>
+                    <p>Trees Planted</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3 id="total-users">523</h3>
+                    <p>Active Contributors</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-cloud"></i>
+                    <h3 id="total-co2">28,481 kg</h3>
+                    <p>CO2 Absorbed</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-heart"></i>
+                    <h3 id="total-donations">$12,450</h3>
+                    <p>Total Donations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-seedling"></i>
+                    <h3>Choose a Plant</h3>
+                    <p>Select from our variety of trees and plants that you want to contribute to nature.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-camera"></i>
+                    <h3>Upload Photo</h3>
+                    <p>Plant the tree and upload a photo as proof of your contribution to nature.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Track Progress</h3>
+                    <p>See your impact on the environment and track the CO2 you've helped absorb.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <i class="fas fa-trophy"></i>
+                    <h3>Earn Certificate</h3>
+                    <p>Top contributors receive certificates recognizing their environmental impact.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Plants Section -->
+    <section class="featured-plants">
+        <div class="container">
+            <h2 class="section-title">Popular Plants</h2>
+            <div class="plants-grid">
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300" alt="Neem Tree" onerror="this.src='https://via.placeholder.com/300x200/228B22/ffffff?text=Neem+Tree'">
+                    <div class="plant-info">
+                        <h3>Neem Tree</h3>
+                        <p class="co2-info"><i class="fas fa-cloud"></i> Absorbs 25 kg CO2/year</p>
+                    </div>
+                </div>
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1509223197845-458d87a6c1aa?w=300" alt="Mango Tree" onerror="this.src='https://via.placeholder.com/300x200/228B22/ffffff?text=Mango+Tree'">
+                    <div class="plant-info">
+                        <h3>Mango Tree</h3>
+                        <p class="co2-info"><i class="fas fa-cloud"></i> Absorbs 30 kg CO2/year</p>
+                    </div>
+                </div>
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1564429238980-c7e7fd4e54e2?w=300" alt="Banyan Tree" onerror="this.src='https://via.placeholder.com/300x200/228B22/ffffff?text=Banyan+Tree'">
+                    <div class="plant-info">
+                        <h3>Banyan Tree</h3>
+                        <p class="co2-info"><i class="fas fa-cloud"></i> Absorbs 45 kg CO2/year</p>
+                    </div>
+                </div>
+            </div>
+            <div class="center-btn">
+                <a href="plants.html" class="btn btn-primary">View All Plants</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Make a Difference?</h2>
+            <p>Join thousands of contributors who are helping to make our planet greener.</p>
+            <div class="cta-buttons">
+                <a href="plants.html" class="btn btn-primary">Start Planting</a>
+                <a href="donate.html" class="btn btn-secondary">Donate Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3><i class="fas fa-leaf"></i> NatureHelp</h3>
+                    <p>Helping people contribute to nature, one plant at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="plants.html">Choose Plant</a>
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="donate.html">Donate</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@naturehelp.org</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NatureHelp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

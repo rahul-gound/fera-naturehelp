@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate - NatureHelp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> NatureHelp
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="plants.html" class="nav-link">Choose Plant</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="donate.html" class="nav-link active">Donate</a>
+                <a href="dashboard.html" class="nav-link">My Dashboard</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Support Our Mission</h1>
+        <p>Your donation helps us plant more trees and protect our environment</p>
+    </section>
+
+    <!-- Donate Section -->
+    <section class="donate-section">
+        <div class="container">
+            <div class="donate-container">
+                <div class="donate-info">
+                    <p>Every donation goes directly towards planting trees, maintaining forests, and educating communities about environmental conservation. Together, we can make a difference!</p>
+                </div>
+
+                <!-- Donation Options -->
+                <div class="donation-options" id="donation-options">
+                    <div class="donation-card" data-amount="10">
+                        <h3>$10</h3>
+                        <p>Plant 1 tree</p>
+                    </div>
+                    <div class="donation-card" data-amount="25">
+                        <h3>$25</h3>
+                        <p>Plant 3 trees</p>
+                    </div>
+                    <div class="donation-card selected" data-amount="50">
+                        <h3>$50</h3>
+                        <p>Plant 5 trees</p>
+                    </div>
+                    <div class="donation-card" data-amount="100">
+                        <h3>$100</h3>
+                        <p>Plant 10 trees</p>
+                    </div>
+                </div>
+
+                <!-- Custom Amount -->
+                <div class="custom-amount">
+                    <h3>Or enter a custom amount</h3>
+                    <div class="amount-input">
+                        <span>$</span>
+                        <input type="number" id="custom-amount" placeholder="Enter amount" min="1">
+                    </div>
+                </div>
+
+                <!-- Donation Form -->
+                <div class="donation-form">
+                    <h3>Your Information</h3>
+                    <form id="donate-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="donor-name">Full Name</label>
+                                <input type="text" id="donor-name" name="name" placeholder="Your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-email">Email Address</label>
+                                <input type="email" id="donor-email" name="email" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-number">Card Number</label>
+                                <input type="text" id="card-number" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donation-amount">Donation Amount</label>
+                                <input type="text" id="donation-amount" readonly value="$50">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="recurring" name="recurring">
+                                Make this a monthly recurring donation
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Leave a Message (Optional)</label>
+                            <textarea id="message" name="message" rows="3" placeholder="Share why you're supporting our cause..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary submit-btn">
+                            <i class="fas fa-heart"></i> Complete Donation
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Impact Info -->
+                <div class="dashboard-card" style="margin-top: 30px;">
+                    <h3>Your Donation Impact</h3>
+                    <div class="impact-stats">
+                        <div class="impact-stat">
+                            <i class="fas fa-tree"></i>
+                            <h4 id="impact-trees">5</h4>
+                            <p>Trees Planted</p>
+                        </div>
+                        <div class="impact-stat">
+                            <i class="fas fa-cloud"></i>
+                            <h4 id="impact-co2">125 kg</h4>
+                            <p>CO2 Absorbed Yearly</p>
+                        </div>
+                        <div class="impact-stat">
+                            <i class="fas fa-lungs"></i>
+                            <h4 id="impact-oxygen">365 kg</h4>
+                            <p>Oxygen Produced Yearly</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <strong>Thank You!</strong>
+            <p>Your donation has been processed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3><i class="fas fa-leaf"></i> NatureHelp</h3>
+                    <p>Helping people contribute to nature, one plant at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="plants.html">Choose Plant</a>
+                    <a href="leaderboard.html">Leaderboard</a>
+                    <a href="donate.html">Donate</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@naturehelp.org</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NatureHelp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/donate.js"></script>
+</body>
+</html>
