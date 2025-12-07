@@ -480,6 +480,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
+    <!-- Utility modules -->
+    <script src="js/utils/validation.js"></script>
+    <script src="js/utils/dom-helpers.js"></script>
+    <script src="js/utils/format-helpers.js"></script>
+    <!-- Service modules -->
+    <script src="js/services/auth-service.js"></script>
+    <script src="js/services/profile-service.js"></script>
+    <!-- Component modules -->
+    <script src="js/components/message-handler.js"></script>
+    <script src="js/components/page-protection.js"></script>
+    <!-- Main auth module (backward compatibility) -->
     <script src="js/auth.js"></script>
     <script>
         function switchTab(tab) {
@@ -510,29 +521,17 @@
             hideMessages();
         }
 
+        // Use MessageHandler from component module
         function showError(message) {
-            const errorEl = document.getElementById('error-message');
-            errorEl.textContent = message;
-            errorEl.classList.add('show');
-            
-            setTimeout(() => {
-                errorEl.classList.remove('show');
-            }, 5000);
+            MessageHandler.showError(message);
         }
 
         function showSuccess(message) {
-            const successEl = document.getElementById('success-message');
-            successEl.textContent = message;
-            successEl.classList.add('show');
-            
-            setTimeout(() => {
-                successEl.classList.remove('show');
-            }, 5000);
+            MessageHandler.showSuccess(message);
         }
 
         function hideMessages() {
-            document.getElementById('error-message').classList.remove('show');
-            document.getElementById('success-message').classList.remove('show');
+            MessageHandler.hideMessages();
         }
 
         async function handleLogin(event) {
@@ -749,14 +748,24 @@
 
         // Check if already logged in or if reset token is present
         document.addEventListener('DOMContentLoaded', async function() {
-            const isAuth = await AuthManager.isAuthenticated();
-            if (isAuth) {
-                window.location.href = 'dashboard.html';
-            }
-
+            // Check if there's a hash fragment (Supabase auth callback)
+            // Don't redirect if processing auth callback
+            const hasAuthHash = window.location.hash && 
+                (window.location.hash.includes('access_token') || 
+                 window.location.hash.includes('error'));
+            
             // Check if this is a password reset redirect
             const urlParams = new URLSearchParams(window.location.search);
             const isReset = urlParams.get('reset');
+            
+            // Only redirect to dashboard if authenticated AND not processing callback
+            if (!hasAuthHash && !isReset) {
+                const isAuth = await AuthManager.isAuthenticated();
+                if (isAuth) {
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+            }
             
             // Check for reset parameter (handles 'true', '1', or any truthy value)
             if (isReset && (isReset === 'true' || isReset === '1')) {
