@@ -123,6 +123,30 @@ const AuthManager = {
         }
     },
 
+    // Request password reset
+    resetPassword: async function(email) {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return { error: { message: 'Supabase not initialized' } };
+        
+        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/login.html?reset=true'
+        });
+        
+        return { data, error };
+    },
+
+    // Update password
+    updatePassword: async function(newPassword) {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return { error: { message: 'Supabase not initialized' } };
+        
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+        
+        return { data, error };
+    },
+
     // Add plant contribution
     addPlantContribution: async function(userId, plantData) {
         const supabase = window.getSupabaseClient();
