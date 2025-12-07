@@ -494,10 +494,12 @@
                 }
 
                 // Check if email confirmation is required
-                if (data.user && !data.session) {
+                if (data && data.user && !data.session) {
                     showSuccess('Account created! Please check your email to verify your account before logging in.');
-                } else {
+                } else if (data && data.user) {
                     showSuccess('Account created successfully! You can now login.');
+                } else {
+                    showSuccess('Account created successfully!');
                 }
                 
                 // Switch to login tab after 3 seconds
