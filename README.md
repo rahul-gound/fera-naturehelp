@@ -55,10 +55,19 @@ A web platform where users can contribute to nature by planting trees, tracking 
 ## Getting Started
 
 1. Clone the repository
-2. Open `index.html` in a web browser
-3. Start exploring the platform!
+2. Configure Supabase (see [SUPABASE_SETUP.md](SUPABASE_SETUP.md))
+3. Configure email settings (see [EMAIL_CONFIGURATION.md](EMAIL_CONFIGURATION.md))
+4. Open `index.html` in a web browser
+5. Start exploring the platform!
 
 No build process or server required - it's a static website that runs directly in the browser.
+
+### Authentication Setup
+
+The application uses Supabase for authentication. To resolve email verification issues:
+- For development: Disable email confirmation in Supabase settings
+- For production: Configure SMTP and customize email templates
+- See detailed instructions in [EMAIL_CONFIGURATION.md](EMAIL_CONFIGURATION.md)
 
 ## CO2 Absorption Data
 

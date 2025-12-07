@@ -73,7 +73,8 @@ const AuthManager = {
             options: {
                 data: {
                     name: name
-                }
+                },
+                emailRedirectTo: window.location.origin + '/dashboard.html'
             }
         });
         
