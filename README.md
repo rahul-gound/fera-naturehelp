@@ -1,4 +1,4 @@
-# NatureHelp - Plant Trees, Save Earth 🌳
+# Fera NatureHelp - Plant Trees, Save Earth 🌳
 
 A web platform where users can contribute to nature by planting trees, tracking their environmental impact, and competing on a leaderboard.
 
@@ -35,6 +35,13 @@ A web platform where users can contribute to nature by planting trees, tracking 
 - Recent activity timeline
 - Track your rank on the leaderboard
 
+### 🔐 Authentication & Security
+- User registration with email verification
+- Secure password reset functionality
+- Email delivery via Mailroo SMTP
+- Branded email templates with Fera NatureHelp identity
+- Session management with Supabase Auth
+
 ## Pages
 
 - **Home** (`index.html`) - Landing page with overview and stats
@@ -56,7 +63,7 @@ A web platform where users can contribute to nature by planting trees, tracking 
 
 1. Clone the repository
 2. Configure Supabase (see [SUPABASE_SETUP.md](SUPABASE_SETUP.md))
-3. Configure email settings (see [EMAIL_CONFIGURATION.md](EMAIL_CONFIGURATION.md))
+3. Configure Mailroo SMTP email settings (see [MAILROO_SETUP.md](MAILROO_SETUP.md))
 4. Open `index.html` in a web browser
 5. Start exploring the platform!
 
@@ -64,10 +71,14 @@ No build process or server required - it's a static website that runs directly i
 
 ### Authentication Setup
 
-The application uses Supabase for authentication. To resolve email verification issues:
-- For development: Disable email confirmation in Supabase settings
-- For production: Configure SMTP and customize email templates
-- See detailed instructions in [EMAIL_CONFIGURATION.md](EMAIL_CONFIGURATION.md)
+The application uses Supabase for authentication with Mailroo SMTP for email delivery:
+- Email verification for new signups
+- Password reset functionality
+- For development: Optionally disable email confirmation in Supabase settings
+- For production: Configure Mailroo SMTP and customize email templates
+- See detailed instructions in:
+  - [MAILROO_SETUP.md](MAILROO_SETUP.md) - Complete Mailroo SMTP setup guide
+  - [EMAIL_CONFIGURATION.md](EMAIL_CONFIGURATION.md) - Email template customization
 
 ## CO2 Absorption Data
 
