@@ -144,7 +144,7 @@ function setupUploadForm() {
     const form = document.getElementById('upload-form');
     if (!form) return;
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         // Validate plant selection
@@ -153,29 +153,17 @@ function setupUploadForm() {
             return;
         }
 
+        // Check authentication
+        const authUser = await AuthManager.getCurrentUser();
+        if (!authUser) {
+            alert('Please log in to add contributions.');
+            window.location.href = 'login.html';
+            return;
+        }
+
         // Get form data
-        const formData = {
-            name: document.getElementById('user-name').value.trim(),
-            email: document.getElementById('user-email').value.trim(),
-            plantId: selectedPlant.id,
-            plantName: selectedPlant.name,
-            location: document.getElementById('location').value.trim(),
-            notes: document.getElementById('notes').value.trim(),
-            co2: selectedPlant.co2PerYear
-        };
-
-        // Validate required fields
-        if (!formData.name || !formData.email) {
-            alert('Please fill in all required fields.');
-            return;
-        }
-
-        // Validate email
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(formData.email)) {
-            alert('Please enter a valid email address.');
-            return;
-        }
+        const location = document.getElementById('location').value.trim();
+        const notes = document.getElementById('notes').value.trim();
 
         // Check for photo
         const photoInput = document.getElementById('plant-photo');
@@ -184,39 +172,55 @@ function setupUploadForm() {
             return;
         }
 
-        // Save contribution
-        const contribution = DataStore.saveContribution(formData);
+        // Disable submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
-        // Update or create user
-        let user = DataStore.getUser(formData.email);
-        if (user) {
-            user.trees = (user.trees || 0) + 1;
-            user.co2 = (user.co2 || 0) + selectedPlant.co2PerYear;
-        } else {
-            user = {
-                name: formData.name,
-                email: formData.email,
-                trees: 1,
-                co2: selectedPlant.co2PerYear,
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&background=228B22&color=fff`
-            };
-        }
-        DataStore.saveUser(user);
-        DataStore.setCurrentUser(user);
+        try {
+            // For now, we'll just use a placeholder for photo URL
+            // In production, you would upload to Supabase Storage
+            const photoUrl = 'placeholder_photo_url';
 
-        // Show success message
-        showSuccessMessage('Your contribution has been recorded. Thank you for helping the environment!');
+            // Save contribution to Supabase
+            const contribution = await AuthManager.addPlantContribution(authUser.id, {
+                plantId: selectedPlant.id,
+                plantName: selectedPlant.name,
+                location: location || 'Not specified',
+                photoUrl: photoUrl,
+                co2PerYear: selectedPlant.co2PerYear
+            });
 
-        // Reset form
-        form.reset();
-        selectedPlant = null;
-        document.querySelectorAll('.plant-select-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        const previewImage = document.getElementById('preview-image');
-        if (previewImage) {
-            previewImage.style.display = 'none';
+            if (contribution) {
+                // Show success message
+                showSuccessMessage('Your contribution has been recorded. Thank you for helping the environment!');
+
+                // Reset form
+                form.reset();
+                selectedPlant = null;
+                document.querySelectorAll('.plant-select-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                const previewImage = document.getElementById('preview-image');
+                if (previewImage) {
+                    previewImage.style.display = 'none';
+                }
+
+                // Redirect to dashboard after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } else {
+                alert('Failed to save contribution. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error saving contribution:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
         
         const uploadArea = document.getElementById('upload-area');
