@@ -117,8 +117,62 @@ The application uses Supabase Auth with email/password authentication:
 
 1. In Supabase Dashboard, go to Authentication > Settings
 2. Enable Email provider
-3. Configure email templates if needed
-4. The application handles user signup and profile creation automatically
+3. **Configure Email Confirmation Settings** (Important):
+   - Go to Authentication > Settings > Email Auth
+   - **Option 1 (Recommended for Development)**: Disable email confirmation
+     - Uncheck "Enable email confirmations"
+     - This allows users to login immediately after signup without email verification
+   - **Option 2 (Production)**: Keep email confirmation enabled
+     - Ensure SMTP settings are properly configured
+     - Customize email templates under Authentication > Email Templates
+     - Update "Confirm signup" template with your app name "NatureHelp"
+     - Set the redirect URL to your application domain
+4. Configure Site URL:
+   - Go to Authentication > URL Configuration
+   - Set "Site URL" to your application's URL (e.g., `http://localhost:8000` for local or your production domain)
+5. Configure Redirect URLs:
+   - Add your application URLs to the "Redirect URLs" list
+   - For local development: `http://localhost:8000/dashboard.html`
+   - For production: `https://yourdomain.com/dashboard.html`
+6. The application handles user signup and profile creation automatically
+
+## Troubleshooting
+
+### Email Verification Issues
+
+**Problem**: Users receive "email not confirmed" error when trying to login after signup.
+
+**Solutions**:
+
+1. **Disable Email Confirmation (Development/Testing)**:
+   - Go to Supabase Dashboard > Authentication > Settings
+   - Under "Email Auth" section, uncheck "Enable email confirmations"
+   - Users can now login immediately after signup without email verification
+
+2. **Configure Email Delivery (Production)**:
+   - Ensure you have configured SMTP settings in Supabase
+   - Go to Project Settings > Auth > SMTP Settings
+   - Configure your email provider (SendGrid, AWS SES, Mailgun, etc.)
+   - Test email delivery by creating a test account
+
+3. **Customize Email Templates**:
+   - Go to Authentication > Email Templates
+   - Edit "Confirm signup" template
+   - Update the subject line to include "NatureHelp"
+   - Customize the email body with your branding
+   - Ensure the confirmation link redirects to the correct URL
+
+4. **Check Spam/Junk Folder**:
+   - Verification emails might be filtered as spam
+   - Check spam folder in email inbox
+   - Add Supabase sender email to contacts/whitelist
+
+### Common Issues
+
+- **"Supabase not initialized"**: Make sure Supabase CDN script is loaded before auth.js
+- **"Invalid API key"**: Verify the Supabase URL and anon key in js/supabase.js
+- **Profile not created**: Check Row Level Security policies allow profile creation
+- **Login redirect fails**: Verify redirect URLs are configured in Authentication settings
 
 ## Notes
 
@@ -127,3 +181,4 @@ The application uses Supabase Auth with email/password authentication:
 - New users start with zero trees planted, zero donations, and zero CO2 absorbed
 - All monetary values use DECIMAL for precision
 - Timestamps are stored with timezone information
+- For production use, always enable email confirmation and configure proper SMTP settings
