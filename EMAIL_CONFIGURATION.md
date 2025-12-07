@@ -55,7 +55,21 @@ For production environments, keep email confirmation enabled and configure prope
 
 1. Go to **Authentication** → **Email Templates**
 2. Select **"Confirm signup"** template
-3. Update the template:
+3. Update the template with one of the following options:
+
+**Option A: Basic Template (Minimal)**
+
+```html
+Subject: Confirm your signup
+
+Body:
+<h2>Confirm your signup</h2>
+
+<p>Follow this link to confirm your user:</p>
+<p><a href="{{ .ConfirmationURL }}">Confirm your mail</a></p>
+```
+
+**Option B: Custom Branded Template (Recommended)**
 
 ```html
 Subject: Verify your email for NatureHelp - fera-naturehelp
