@@ -116,8 +116,16 @@ function setupDonateForm() {
     }
 
     // Form submission
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        // Check authentication
+        const authUser = await AuthManager.getCurrentUser();
+        if (!authUser) {
+            alert('Please log in to make a donation.');
+            window.location.href = 'login.html';
+            return;
+        }
 
         // Validate
         const name = document.getElementById('donor-name').value.trim();
@@ -157,40 +165,47 @@ function setupDonateForm() {
             return;
         }
 
-        // Save donation
-        const donation = {
-            name: name,
-            email: email,
-            amount: selectedAmount,
-            recurring: document.getElementById('recurring').checked,
-            message: document.getElementById('message').value.trim(),
-            treesSponsored: Math.floor(selectedAmount / 10)
-        };
+        // Disable submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-        DataStore.saveDonation(donation);
+        try {
+            // Save donation to Supabase
+            const donation = await AuthManager.addDonation(authUser.id, selectedAmount);
 
-        // Update user if exists
-        let user = DataStore.getUser(email);
-        if (user) {
-            user.donations = (user.donations || 0) + selectedAmount;
-            DataStore.saveUser(user);
-        }
+            if (donation) {
+                // Show success message
+                showSuccessMessage('Thank you for your generous donation of $' + selectedAmount + '!');
 
-        // Show success message
-        showSuccessMessage('Thank you for your generous donation of $' + selectedAmount + '!');
+                // Reset form
+                form.reset();
+                selectedAmount = 50;
+                updateDonationAmount();
+                updateImpactStats();
+                
+                // Reset donation cards
+                document.querySelectorAll('.donation-card').forEach((opt, index) => {
+                    opt.classList.remove('selected');
+                    if (parseInt(opt.dataset.amount) === 50) {
+                        opt.classList.add('selected');
+                    }
+                });
 
-        // Reset form
-        form.reset();
-        selectedAmount = 50;
-        updateDonationAmount();
-        updateImpactStats();
-        
-        // Reset donation cards
-        document.querySelectorAll('.donation-card').forEach((opt, index) => {
-            opt.classList.remove('selected');
-            if (parseInt(opt.dataset.amount) === 50) {
-                opt.classList.add('selected');
+                // Redirect to dashboard after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } else {
+                alert('Failed to process donation. Please try again.');
             }
-        });
+        } catch (error) {
+            console.error('Error processing donation:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
     });
 }

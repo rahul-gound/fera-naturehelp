@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NatureHelp</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #228B22 0%, #4CAF50 100%);
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-left {
+            background: linear-gradient(135deg, #228B22 0%, #4CAF50 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .auth-left i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .auth-left h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .auth-left p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .auth-right {
+            padding: 60px 40px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: #228B22;
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #228B22;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #228B22;
+            box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.1);
+        }
+
+        .form-input-icon {
+            position: relative;
+        }
+
+        .form-input-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .form-input-icon input {
+            padding-left: 45px;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #228B22 0%, #4CAF50 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(34, 139, 34, 0.3);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        .btn-auth:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #228B22;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            color: #1a6b1a;
+        }
+
+        @media (max-width: 768px) {
+            .auth-box {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-left {
+                padding: 40px 30px;
+            }
+
+            .auth-left i {
+                font-size: 60px;
+            }
+
+            .auth-left h2 {
+                font-size: 1.5rem;
+            }
+
+            .auth-right {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-left">
+                <i class="fas fa-leaf"></i>
+                <h2>Welcome to NatureHelp</h2>
+                <p>Join our community of nature lovers. Plant trees, track your contribution, and see your impact on the environment.</p>
+                <div style="margin-top: 30px; opacity: 0.8;">
+                    <p><i class="fas fa-check-circle"></i> Track your trees planted</p>
+                    <p><i class="fas fa-check-circle"></i> Monitor CO2 absorption</p>
+                    <p><i class="fas fa-check-circle"></i> Earn certificates</p>
+                    <p><i class="fas fa-check-circle"></i> Compete on leaderboard</p>
+                </div>
+            </div>
+
+            <div class="auth-right">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+                    <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="error-message"></div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="success-message"></div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <div class="form-input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="form-input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signup-form" class="auth-form" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <div class="form-input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="signup-name" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <div class="form-input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="signup-email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div class="form-input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signup-password" class="form-input" placeholder="Create a password (min 6 characters)" required minlength="6">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth" id="signup-btn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+
+                <div class="back-home">
+                    <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        function switchTab(tab) {
+            // Update tab buttons
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+                document.getElementById('signup-form').classList.remove('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('signup-form').classList.add('active');
+                document.getElementById('login-form').classList.remove('active');
+            }
+
+            // Clear messages
+            hideMessages();
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('error-message');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+            
+            setTimeout(() => {
+                errorEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('success-message');
+            successEl.textContent = message;
+            successEl.classList.add('show');
+            
+            setTimeout(() => {
+                successEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').classList.remove('show');
+            document.getElementById('success-message').classList.remove('show');
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            hideMessages();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+            try {
+                const { data, error } = await AuthManager.signIn(email, password);
+
+                if (error) {
+                    showError(error.message || 'Login failed. Please check your credentials.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    return;
+                }
+
+                showSuccess('Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('An unexpected error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            hideMessages();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const btn = document.getElementById('signup-btn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+
+            try {
+                const { data, error } = await AuthManager.signUp(email, password, name);
+
+                if (error) {
+                    showError(error.message || 'Sign up failed. Please try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+                    return;
+                }
+
+                showSuccess('Account created successfully! You can now login.');
+                
+                // Switch to login tab after 2 seconds
+                setTimeout(() => {
+                    switchTab('login');
+                    document.getElementById('login-email').value = email;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                showError('An unexpected error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        }
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', async function() {
+            const isAuth = await AuthManager.isAuthenticated();
+            if (isAuth) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

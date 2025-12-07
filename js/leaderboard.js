@@ -4,16 +4,16 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeLeaderboard();
 });
 
-function initializeLeaderboard() {
-    loadTopContributors();
-    loadLeaderboardTable();
+async function initializeLeaderboard() {
+    await loadTopContributors();
+    await loadLeaderboardTable();
 }
 
-function loadTopContributors() {
+async function loadTopContributors() {
     const container = document.getElementById('top-contributors');
     if (!container) return;
 
-    const leaderboard = DataStore.getLeaderboard();
+    const leaderboard = await AuthManager.getLeaderboard(100);
     const top3 = leaderboard.slice(0, 3);
 
     // Reorder for display: 2nd, 1st, 3rd
@@ -23,14 +23,15 @@ function loadTopContributors() {
 
     container.innerHTML = displayOrder.map((user, index) => {
         if (!user) return '';
+        const displayName = user.name || user.email || 'Anonymous';
         return `
             <div class="top-card ${badges[index]}">
                 <div class="rank-badge">${ranks[index]}</div>
-                <img src="${user.avatar || generateAvatar(user.name)}" alt="${user.name}" class="avatar" onerror="this.src='${generateAvatar(user.name)}'">
-                <h3>${user.name}</h3>
-                <p class="trees-count"><i class="fas fa-tree"></i> ${user.trees} trees</p>
-                <p class="co2-absorbed">${user.co2} kg CO2 absorbed</p>
-                <button class="btn btn-primary certificate-btn" onclick="openCertificateModal('${user.name}', ${user.trees}, ${user.co2})">
+                <img src="${generateAvatar(displayName)}" alt="${displayName}" class="avatar" onerror="this.src='${generateAvatar(displayName)}'">
+                <h3>${displayName}</h3>
+                <p class="trees-count"><i class="fas fa-tree"></i> ${user.trees_planted || 0} trees</p>
+                <p class="co2-absorbed">${user.co2_absorbed || 0} kg CO2 absorbed</p>
+                <button class="btn btn-primary certificate-btn" onclick="openCertificateModal('${displayName}', ${user.trees_planted || 0}, ${user.co2_absorbed || 0})">
                     <i class="fas fa-certificate"></i> View Certificate
                 </button>
             </div>
@@ -38,29 +39,30 @@ function loadTopContributors() {
     }).join('');
 }
 
-function loadLeaderboardTable() {
+async function loadLeaderboardTable() {
     const tbody = document.getElementById('leaderboard-body');
     if (!tbody) return;
 
-    const leaderboard = DataStore.getLeaderboard();
+    const leaderboard = await AuthManager.getLeaderboard(100);
 
     tbody.innerHTML = leaderboard.map((user, index) => {
         const rank = index + 1;
         const rankIcon = getRankIcon(rank);
+        const displayName = user.name || user.email || 'Anonymous';
         
         return `
             <tr>
                 <td>${rankIcon} ${rank}</td>
                 <td>
                     <div class="user-info">
-                        <img src="${user.avatar || generateAvatar(user.name)}" alt="${user.name}" onerror="this.src='${generateAvatar(user.name)}'">
-                        <span>${user.name}</span>
+                        <img src="${generateAvatar(displayName)}" alt="${displayName}" onerror="this.src='${generateAvatar(displayName)}'">
+                        <span>${displayName}</span>
                     </div>
                 </td>
-                <td><i class="fas fa-tree" style="color: #228B22;"></i> ${user.trees}</td>
-                <td><i class="fas fa-cloud" style="color: #4CAF50;"></i> ${user.co2} kg</td>
+                <td><i class="fas fa-tree" style="color: #228B22;"></i> ${user.trees_planted || 0}</td>
+                <td><i class="fas fa-cloud" style="color: #4CAF50;"></i> ${user.co2_absorbed || 0} kg</td>
                 <td>
-                    <button class="btn btn-secondary certificate-btn" onclick="openCertificateModal('${user.name}', ${user.trees}, ${user.co2})">
+                    <button class="btn btn-secondary certificate-btn" onclick="openCertificateModal('${displayName}', ${user.trees_planted || 0}, ${user.co2_absorbed || 0})">
                         <i class="fas fa-certificate"></i> Certificate
                     </button>
                 </td>

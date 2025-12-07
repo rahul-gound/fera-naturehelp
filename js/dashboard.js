@@ -4,30 +4,36 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeDashboard();
 });
 
-function initializeDashboard() {
-    loadUserProfile();
-    loadEnvironmentalImpact();
-    loadPlantBreakdown();
-    loadMyPlants();
-    loadRecentActivity();
+async function initializeDashboard() {
+    await loadUserProfile();
+    await loadEnvironmentalImpact();
+    await loadPlantBreakdown();
+    await loadMyPlants();
+    await loadRecentActivity();
 }
 
-function loadUserProfile() {
-    const user = DataStore.getCurrentUser();
-    const contributions = DataStore.getContributions().filter(c => c.email === user.email);
-    const donations = DataStore.getDonations().filter(d => d.email === user.email);
+async function loadUserProfile() {
+    const authUser = await AuthManager.getCurrentUser();
+    if (!authUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const profile = await AuthManager.getUserProfile(authUser.id);
+    const contributions = await AuthManager.getUserContributions(authUser.id);
+    const donations = await AuthManager.getUserDonations(authUser.id);
 
     // Calculate totals
-    const totalTrees = user.trees || contributions.length;
-    const totalCO2 = user.co2 || DataStore.calculateUserCO2(user.email);
-    const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0) + (user.donations || 0);
+    const totalTrees = profile?.trees_planted || 0;
+    const totalCO2 = profile?.co2_absorbed || 0;
+    const totalDonations = profile?.money_donated || 0;
     
     // Get user rank
-    const leaderboard = DataStore.getLeaderboard();
-    const rank = leaderboard.findIndex(u => u.email === user.email) + 1;
+    const leaderboard = await AuthManager.getLeaderboard(100);
+    const rank = leaderboard.findIndex(u => u.id === authUser.id) + 1;
     
     // Calculate months active
-    const joinDate = user.joinDate || new Date().toISOString();
+    const joinDate = profile?.created_at || authUser.created_at || new Date().toISOString();
     const monthsActive = Math.max(1, Math.ceil((new Date() - new Date(joinDate)) / (1000 * 60 * 60 * 24 * 30)));
 
     // Update UI
@@ -39,8 +45,9 @@ function loadUserProfile() {
     const donationsEl = document.getElementById('user-donations');
     const monthsEl = document.getElementById('user-months');
 
-    if (nameEl) nameEl.textContent = user.name;
-    if (avatarEl) avatarEl.src = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=228B22&color=fff&size=120`;
+    const displayName = profile?.name || authUser.email;
+    if (nameEl) nameEl.textContent = displayName;
+    if (avatarEl) avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=228B22&color=fff&size=120`;
     if (rankEl) rankEl.innerHTML = `<i class="fas fa-trophy"></i> Rank #${rank || 'N/A'}`;
     if (treesEl) treesEl.textContent = totalTrees;
     if (co2El) co2El.textContent = totalCO2 + ' kg';
@@ -52,30 +59,27 @@ function loadUserProfile() {
     const certTrees = document.getElementById('cert-trees');
     const certCO2 = document.getElementById('cert-co2');
 
-    if (certRecipient) certRecipient.textContent = user.name;
+    if (certRecipient) certRecipient.textContent = displayName;
     if (certTrees) certTrees.textContent = totalTrees;
     if (certCO2) certCO2.textContent = totalCO2 + ' kg';
 }
 
-function loadEnvironmentalImpact() {
-    const user = DataStore.getCurrentUser();
-    const contributions = DataStore.getContributions().filter(c => c.email === user.email);
+async function loadEnvironmentalImpact() {
+    const authUser = await AuthManager.getCurrentUser();
+    if (!authUser) return;
+
+    const profile = await AuthManager.getUserProfile(authUser.id);
+    const contributions = await AuthManager.getUserContributions(authUser.id);
 
     // Calculate impact
-    let totalCO2 = user.co2 || 0;
-    contributions.forEach(c => {
-        const plant = DataStore.getPlantById(c.plantId);
-        if (plant) {
-            totalCO2 += plant.co2PerYear;
-        }
-    });
+    let totalCO2 = profile?.co2_absorbed || 0;
 
     // Oxygen calculation: approximately 2.92x the CO2 absorption (based on photosynthesis ratio)
     const OXYGEN_TO_CO2_RATIO = 2.92;
     const oxygen = Math.round(totalCO2 * OXYGEN_TO_CO2_RATIO);
     
     // Water conservation: roughly 400 liters per tree per year
-    const trees = user.trees || contributions.length;
+    const trees = profile?.trees_planted || 0;
     const water = trees * 400;
 
     // Update UI
@@ -88,36 +92,39 @@ function loadEnvironmentalImpact() {
     if (waterEl) waterEl.textContent = formatNumber(water) + ' L';
 }
 
-function loadPlantBreakdown() {
+async function loadPlantBreakdown() {
     const container = document.getElementById('plant-breakdown');
     if (!container) return;
 
-    const user = DataStore.getCurrentUser();
-    const contributions = DataStore.getContributions().filter(c => c.email === user.email);
+    const authUser = await AuthManager.getCurrentUser();
+    if (!authUser) return;
+
+    const contributions = await AuthManager.getUserContributions(authUser.id);
     
     // Group by plant type
     const plantCounts = {};
     contributions.forEach(c => {
-        const plant = DataStore.getPlantById(c.plantId);
-        if (plant) {
-            if (!plantCounts[plant.name]) {
-                plantCounts[plant.name] = { count: 0, co2: plant.co2PerYear };
-            }
-            plantCounts[plant.name].count++;
+        const plantName = c.plant_name;
+        const co2PerYear = c.co2_per_year || 0;
+        
+        if (!plantCounts[plantName]) {
+            plantCounts[plantName] = { count: 0, co2: co2PerYear };
         }
+        plantCounts[plantName].count++;
     });
 
-    // If no contributions, show default data using actual plant data
+    // If no contributions, show message
     if (Object.keys(plantCounts).length === 0) {
-        const allPlants = DataStore.getPlants();
-        const defaultPlantIds = [1, 2, 3, 9]; // Neem, Mango, Banyan, Bamboo
-        const defaultCounts = [5, 3, 2, 2];
-        defaultPlantIds.forEach((id, index) => {
-            const plant = allPlants.find(p => p.id === id);
-            if (plant) {
-                plantCounts[plant.name] = { count: defaultCounts[index], co2: plant.co2PerYear };
-            }
-        });
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #666;">
+                <i class="fas fa-seedling" style="font-size: 48px; margin-bottom: 15px; color: #228B22;"></i>
+                <p>You haven't planted any trees yet.</p>
+                <a href="plants.html" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">
+                    <i class="fas fa-plus"></i> Plant Your First Tree
+                </a>
+            </div>
+        `;
+        return;
     }
 
     const totalPlants = Object.values(plantCounts).reduce((sum, p) => sum + p.count, 0);
@@ -145,72 +152,66 @@ function loadPlantBreakdown() {
     `;
 }
 
-function loadMyPlants() {
+async function loadMyPlants() {
     const container = document.getElementById('my-plants-grid');
     if (!container) return;
 
-    const user = DataStore.getCurrentUser();
-    const contributions = DataStore.getContributions().filter(c => c.email === user.email);
-    
-    // Get unique plants with images
-    const myPlants = [];
-    contributions.forEach(c => {
-        const plant = DataStore.getPlantById(c.plantId);
-        if (plant) {
-            myPlants.push({
-                ...plant,
-                date: c.date,
-                location: c.location
-            });
-        }
-    });
+    const authUser = await AuthManager.getCurrentUser();
+    if (!authUser) return;
 
-    // If no contributions, show default plants
-    if (myPlants.length === 0) {
-        const defaultPlantIds = [1, 2, 3, 5, 7, 8];
-        defaultPlantIds.forEach(id => {
-            const plant = DataStore.getPlantById(id);
-            if (plant) {
-                myPlants.push({
-                    ...plant,
-                    date: new Date().toISOString(),
-                    location: 'Local Park'
-                });
-            }
-        });
+    const contributions = await AuthManager.getUserContributions(authUser.id);
+    
+    // If no contributions, show message
+    if (contributions.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #666; grid-column: 1 / -1;">
+                <i class="fas fa-tree" style="font-size: 48px; margin-bottom: 15px; color: #228B22;"></i>
+                <p>No trees planted yet. Start your journey!</p>
+            </div>
+        `;
+        return;
     }
 
-    container.innerHTML = myPlants.map(plant => `
-        <div class="my-plant-card">
-            <img src="${plant.image}" alt="${plant.name}" onerror="this.src='https://via.placeholder.com/200x120/228B22/ffffff?text=${encodeURIComponent(plant.name)}'">
-            <div class="plant-name">
-                <h4>${plant.name}</h4>
-                <p><i class="fas fa-cloud"></i> ${plant.co2PerYear} kg CO2/year</p>
+    // Get plant images from DataStore
+    const plants = DataStore.getPlants();
+    
+    container.innerHTML = contributions.map(contribution => {
+        const plant = plants.find(p => p.id === contribution.plant_id);
+        const plantImage = plant?.image || 'https://via.placeholder.com/200x120/228B22/ffffff?text=Tree';
+        
+        return `
+            <div class="my-plant-card">
+                <img src="${plantImage}" alt="${contribution.plant_name}" onerror="this.src='https://via.placeholder.com/200x120/228B22/ffffff?text=${encodeURIComponent(contribution.plant_name)}'">
+                <div class="plant-name">
+                    <h4>${contribution.plant_name}</h4>
+                    <p><i class="fas fa-cloud"></i> ${contribution.co2_per_year} kg CO2/year</p>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-function loadRecentActivity() {
+async function loadRecentActivity() {
     const container = document.getElementById('activity-list');
     if (!container) return;
 
-    const user = DataStore.getCurrentUser();
-    const contributions = DataStore.getContributions().filter(c => c.email === user.email);
-    const donations = DataStore.getDonations().filter(d => d.email === user.email);
+    const authUser = await AuthManager.getCurrentUser();
+    if (!authUser) return;
+
+    const contributions = await AuthManager.getUserContributions(authUser.id);
+    const donations = await AuthManager.getUserDonations(authUser.id);
 
     // Combine and sort activities
     const activities = [];
 
     contributions.forEach(c => {
-        const plant = DataStore.getPlantById(c.plantId);
         activities.push({
             type: 'plant',
             icon: 'fas fa-seedling',
             color: '#228B22',
-            text: `Planted a ${plant ? plant.name : 'tree'}`,
+            text: `Planted a ${c.plant_name}`,
             location: c.location,
-            date: c.date
+            date: c.created_at
         });
     });
 
@@ -220,23 +221,22 @@ function loadRecentActivity() {
             icon: 'fas fa-heart',
             color: '#e91e63',
             text: `Donated $${d.amount}`,
-            date: d.date
+            date: d.created_at
         });
     });
 
     // Sort by date (newest first)
     activities.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // If no activities, show default
+    // If no activities, show message
     if (activities.length === 0) {
-        const defaultActivities = [
-            { icon: 'fas fa-seedling', color: '#228B22', text: 'Planted a Neem Tree', location: 'City Park', date: new Date(Date.now() - 86400000).toISOString() },
-            { icon: 'fas fa-seedling', color: '#228B22', text: 'Planted a Mango Tree', location: 'School Garden', date: new Date(Date.now() - 172800000).toISOString() },
-            { icon: 'fas fa-heart', color: '#e91e63', text: 'Donated $50', date: new Date(Date.now() - 259200000).toISOString() },
-            { icon: 'fas fa-seedling', color: '#228B22', text: 'Planted a Banyan Tree', location: 'Community Center', date: new Date(Date.now() - 432000000).toISOString() },
-            { icon: 'fas fa-trophy', color: '#FFD700', text: 'Reached Rank #5 on Leaderboard', date: new Date(Date.now() - 604800000).toISOString() }
-        ];
-        activities.push(...defaultActivities);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #666;">
+                <i class="fas fa-history" style="font-size: 48px; margin-bottom: 15px; color: #999;"></i>
+                <p>No activity yet. Start planting trees or making donations!</p>
+            </div>
+        `;
+        return;
     }
 
     container.innerHTML = `
